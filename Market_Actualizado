@@ -1,0 +1,66 @@
+# MAIN
+menu_status=True
+# Main
+menu_status = True
+while menu_status:
+    mainmenu()
+    opt= input()
+    if opt == 1:
+       os.system('cls')
+       print("::::::::::::::::::::::::::")
+       print(":::new client::")
+       print("::::::::::::::::::::::::::")
+
+       i = 0
+       while i < len(client_fullname[1]}   l    client_fullname}):
+          if client_ident[i] == ident:
+             print("client already exist. try again")
+             break
+          i += 1
+       ident = input("enter client ident: ")
+       fullname = input("enter client fullname: ")
+       print("enter client adress: ")
+    mainMenu()
+    opt = int(input())
+
+    key = input("press any key to back main menu.")
+    if opt ==11:
+        print("bye bye")
+    if opt == 1:
+        os.system('clear')
+        print('...............................')
+        print('........NEW CLIENTS............')
+        print('...............................')
+
+        ident = input('Client identification: ')
+        client_ident.append(ident)
+        fullname = input('Client fullname: ')
+        client_fullname.append(fullname)
+        print('Client has been registered successfully !!!')
+        key = input('Press any option to back main menu.')
+    elif opt == 3:
+        os.system('clear')
+        print('...............................')
+        print('........LIST CLIENTS............')
+        print('...............................')
+
+        print('\n')
+        print('-' * 50)
+        print(f"{'Identification':<20} {'Fullname':<20}")
+        print('-' * 50)
+        i = 0
+        while i < len(client_fullname):
+
+            print(f'{client_ident[i]:<20} {client_fullname[i]:<20}')
+            i+=1 
+        
+        key = input('\nPress any option to back main menu.')
+    if opt == 11:
+        print('Bye, bye')
+        break
+    if opt < 1 and opt > 11:
+        print('invalid option. try again '\n)
+        os.system('pause')
+    if opt < 1 or opt > 11:
+        key = input('Invalid option. Try again. \n' \
+        'Press any key to continue.')
