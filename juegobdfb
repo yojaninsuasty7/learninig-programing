@@ -1,0 +1,136 @@
+import random
+import tkinter as tk
+from tkinter import messagebox
+
+
+class JuegoMemoria:
+
+  def __init__(self, ventana):
+    self.ventana = ventana
+    self.ventana.title("Juego de Memoria - Proyecto Final")
+    self.ventana.geometry("400x480")
+    
+
+    # aqui hacemos el tablero con sus valores (tablero de 4x4 = 16 cartas, 8 parejas)
+    self.valores = ["🍎", "🍎", "🍌", "🍌", "🍇", "🍇", "🍓", "🍓", 
+                    "🍉", "🍉", "🍒", "🍒", "🍍", "🍍", "🥝", "🥝"]
+    random.shuffle(self.valores)
+
+    self.cartas_botones = []
+    self.primer_click = None
+    self.segundo_click = None
+    self.bloqueo = False
+    self.intentos = 10  # Intentos 10 para que acabe el juego
+    self.parejas_encontradas = 0
+
+  
+    self.lbl_titulo = tk.Label(
+        ventana, text="Encuentra las parejas", font=("Arial", 16, "bold")
+    )
+    self.lbl_titulo.pack(pady=10)
+
+    self.lbl_intentos = tk.Label(
+        ventana, text=f"Intentos restantes: {self.intentos}", font=("Arial", 12)
+    )
+    self.lbl_intentos.pack(pady=5)
+
+    self.marco_tablero = tk.Frame(ventana)
+    self.marco_tablero.pack(pady=10)
+
+    
+    for i in range(16):
+      btn = tk.Button(
+          self.marco_tablero,
+          text="?",
+          font=("Arial", 20),
+          width=4,
+          height=2,
+          bg="#34495E",
+          fg="white",
+          command=lambda idx=i: self.voltear_carta(idx),
+      )
+      fila = i // 4
+      columna = i % 4
+      btn.grid(row=fila, column=columna, padx=5, pady=5)
+      self.cartas_botones.append(btn)
+
+    self.btn_reiniciar = tk.Button(
+        ventana,
+        text="Reiniciar Juego",
+        font=("Arial", 11, "bold"),
+        bg="#E74C3C",
+        fg="white",
+        command=self.reiniciar_juego,
+    )
+    self.btn_reiniciar.pack(pady=10)
+
+  def voltear_carta(self, idx):
+   
+    if self.bloqueo:
+      return
+    btn = self.cartas_botones[idx]
+    if btn["text"] != "?":
+      return
+
+   
+    btn.config(text=self.valores[idx], bg="#ECF0F1", fg="#2C3E50")
+
+    if self.primer_click is None:
+      self.primer_click = idx
+    else:
+      self.segundo_click = idx
+      self.bloqueo = True  # Bloquear clics mientras comparamos
+      self.ventana.after(600, self.verificar_pareja)
+
+  def verificar_pareja(self):
+    idx1 = self.primer_click
+    idx2 = self.segundo_click
+    btn1 = self.cartas_botones[idx1]
+    btn2 = self.cartas_botones[idx2]
+
+    # Si coinciden
+    if self.valores[idx1] == self.valores[idx2]:
+      self.parejas_encontradas += 1
+      self.primer_click = None
+      self.segundo_click = None
+      self.bloqueo = False
+
+      # Condición de Victoria
+      if self.parejas_encontradas == 8:
+        messagebox.showinfo("¡Victoria!", "¡Felicidades, encontraste todas las parejas!")
+        self.reiniciar_juego()
+
+    else:
+      # No coinciden: se tapan de nuevo y restamos un intento
+      btn1.config(text="?", bg="#34495E", fg="white")
+      btn2.config(text="?", bg="#34495E", fg="white")
+      self.intentos -= 1
+      self.lbl_intentos.config(text=f"Intentos restantes: {self.intentos}")
+
+      self.primer_click = None
+      self.segundo_click = None
+      self.bloqueo = False
+
+      # Condición de Derrota por quedarse sin intentos
+      if self.intentos <= 0:
+        messagebox.showerror("¡Derrota!", "Te has quedado sin intentos. ¡Inténtalo de nuevo!")
+        self.reiniciar_juego()
+
+  def reiniciar_juego(self):
+    random.shuffle(self.valores)
+    self.intentos = 15
+    self.parejas_encontradas = 0
+    self.primer_click = None
+    self.segundo_click = None
+    self.bloqueo = False
+
+    self.lbl_intentos.config(text=f"Intentos restantes: {self.intentos}")
+    for btn in self.cartas_botones:
+      btn.config(text="?", bg="#34495E", fg="white")
+
+
+# Ejecutar la aplicación
+if __name__ == "__main__":
+  root = tk.Tk()
+  app = JuegoMemoria(root)
+  root.mainloop()
